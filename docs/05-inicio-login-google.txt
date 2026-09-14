@@ -1,0 +1,32 @@
+05 - Início do login com Google (cabeçalhos saneados)
+======================================================
+
+Pedido
+------
+GET https://NOME-DO-PROJETO.pages.dev/oauth/login/google HTTP/2
+Host: NOME-DO-PROJETO.pages.dev
+
+Resposta
+--------
+HTTP/2 302
+Location: https://accounts.google.com/o/oauth2/v2/auth
+          ?client_id=[REMOVIDO]
+          &redirect_uri=https://NOME-DO-PROJETO.pages.dev%2Foauth%2Fcallback%2Fgoogle
+          &response_type=code
+          &state=[REMOVIDO]
+          &code_challenge=[REMOVIDO]
+          &code_challenge_method=S256
+          &scope=openid+email+profile
+          &nonce=[REMOVIDO]
+Set-Cookie: __Host-oauth-tx=[REMOVIDO]; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600
+Cache-Control: no-store
+
+Conferências
+------------
+[x] o estado HTTP é 302
+[x] a resposta cria __Host-oauth-tx
+[x] Location aponta para o Google
+[x] response_type=code está presente
+[x] code_challenge_method=S256 está presente
+[x] a URL de retorno é a URL pages.dev exata
+[x] Client Secret e code_verifier estão ausentes

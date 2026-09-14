@@ -1,0 +1,8 @@
+SELECT name, type FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name;
+
+name                        type
+--------------------------  -----
+oauth_transactions_expiry   index
+sessions_expiry             index
+oauth_transactions          table
+sessions                    table

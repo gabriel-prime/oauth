@@ -1,0 +1,40 @@
+01 - Configuração do projeto no Cloudflare Pages
+=================================================
+
+Nome do projeto ............: NOME-DO-PROJETO
+URL de produção ............: https://NOME-DO-PROJETO.pages.dev
+Integração .................: GitHub (Connect to Git)
+Repositório ................: github.com/USUARIO/NOME-DO-PROJETO
+Ramificação de produção ....: main
+
+Opções de construção
+--------------------
+Framework preset ...........: None
+Build command ..............: (vazio)
+Build output directory .....: public
+Root directory .............: (vazio)
+
+Ligações (Bindings)
+-------------------
+D1 database ................: variável DB -> oauth-sessions-EQUIPE
+                              (produção e prévia)
+
+Variáveis e segredos
+--------------------
+PUBLIC_BASE_URL ............: https://NOME-DO-PROJETO.pages.dev  (texto simples)
+GOOGLE_CLIENT_ID ...........: [REMOVIDO]           (texto simples)
+GITHUB_CLIENT_ID ...........: [REMOVIDO]           (texto simples)
+GOOGLE_CLIENT_SECRET .......: [REMOVIDO]           (criptografado)
+GITHUB_CLIENT_SECRET .......: [REMOVIDO]           (criptografado)
+
+Verificações
+------------
+[x] a raiz do site responde por HTTPS
+[x] a URL termina em .pages.dev
+[x] a ramificação de produção é main
+[x] não existe um comando de construção
+[x] o diretório publicado é public
+[x] /api/health responde 200
+
+Nenhum identificador privado da conta (Account ID, Database ID, Zone ID)
+foi incluído neste documento.

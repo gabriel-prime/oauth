@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Laboratório de autenticação</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="card">
+      <header>
+        <p class="eyebrow">Cloudflare Pages · Pages Functions · D1</p>
+        <h1>Laboratório de autenticação</h1>
+        <p id="status" aria-live="polite">A sessão ainda não foi consultada.</p>
+      </header>
+
+      <section id="login" class="actions">
+        <a class="button google" href="/oauth/login/google">Entrar com Google</a>
+        <a class="button github" href="/oauth/login/github">Entrar com GitHub</a>
+      </section>
+
+      <section id="profile" class="profile" hidden>
+        <dl>
+          <div><dt>Provedor</dt><dd id="profile-provider">—</dd></div>
+          <div><dt>Nome</dt><dd id="profile-name">—</dd></div>
+          <div><dt>E-mail</dt><dd id="profile-email">—</dd></div>
+          <div><dt>Sessão expira em</dt><dd id="profile-expires">—</dd></div>
+        </dl>
+        <form method="post" action="/oauth/logout">
+          <button type="submit">Sair</button>
+        </form>
+      </section>
+
+      <footer>
+        <p>
+          O navegador recebe apenas um cookie opaco de sessão. Tokens e segredos
+          ficam na Pages Function. Os arquivos desta pasta continuam públicos.
+        </p>
+        <p><a href="/api/health">/api/health</a> · <a href="/api/me">/api/me</a></p>
+      </footer>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
