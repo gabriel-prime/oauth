@@ -1,165 +1,97 @@
 # oauth-pages-lab
 
-Login com Google e GitHub em um site estático no Cloudflare Pages, com Pages
-Functions e sessões opacas em um banco D1. Sem Node.js, npm, npx ou Wrangler:
-o GitHub entrega o código ao Pages e todo o resto é feito no painel.
+Login com Google e GitHub em um site estático, com sessões opacas revogáveis.
+Página e rotas dinâmicas vivem na mesma origem de um projeto Cloudflare Pages.
+
+**Produção:** https://oauth-gabriel-fortunato.pages.dev
+
+Só JavaScript e APIs Web do ambiente da Cloudflare — sem Node.js, npm, Wrangler
+ou qualquer dependência externa.
+
+## Estrutura
 
 ```
-oauth-pages-lab/
-├── public/                  conteúdo público (Build output directory)
-│   ├── index.html           página de login (index)
-│   ├── app.js               consulta /api/me e mostra a sessão
-│   ├── styles.css
-│   └── entrega1/            evidências (avaliadas automaticamente)
-├── functions/               Pages Functions (irmã de public, nunca dentro dela)
-│   ├── _shared/             crypto, cookies, providers, oidc, session, http
-│   ├── api/health.js        GET /api/health
-│   ├── api/me.js            GET /api/me
-│   └── oauth/
-│       ├── login/[provider].js     GET /oauth/login/{google|github}
-│       ├── callback/[provider].js  GET /oauth/callback/{google|github}
-│       └── logout.js               POST /oauth/logout
-└── docs/                    esquema SQL, modelos de evidência e scripts
+public/       conteúdo público (Build output directory)
+  index.html  página de login
+  app.js      consulta /api/me e mostra a sessão
+  entrega1/   evidências da avaliação
+functions/    Pages Functions (irmã de public, nunca dentro dela)
+  _shared/    crypto, cookies, providers, oidc, session, http
+  api/        health.js, me.js
+  oauth/      login/[provider].js, callback/[provider].js, logout.js
+docs/         esquema SQL, fontes das evidências em PDF e scripts
 ```
 
-Se a professora pedir o dashboard da disciplina dentro de `public/`, copie os
-arquivos dele para lá; o `index.html` continua sendo a página de login.
+## Rotas
 
-## O que já está pronto
+| Método | Caminho | O que faz |
+|---|---|---|
+| GET | `/api/health` | sinal de vida |
+| GET | `/api/me` | perfil mínimo da sessão, ou 401 |
+| GET | `/oauth/login/{google\|github}` | cria a transação e redireciona ao provedor |
+| GET | `/oauth/callback/{google\|github}` | valida a identidade e cria a sessão |
+| POST | `/oauth/logout` | revoga a sessão local |
 
-- Todas as Functions do roteiro, apenas com JavaScript e APIs Web (Web Crypto,
-  `fetch`, D1 via `context.env.DB`).
-- Cookies `__Host-oauth-tx` (Lax, 10 min) e `__Host-session` (Strict, 8 h).
-- O D1 guarda só os resumos SHA-256 do cookie de transação, do `state` e do
-  cookie de sessão. A transação é apagada antes da troca do código.
-- Google: validação do `id_token` (JWT em 3 partes, RS256, JWKS do documento
-  de descoberta, assinatura RSASSA-PKCS1-v1_5, `iss`, `aud`, `exp`, `iat`,
-  `nonce`).
-- GitHub: `access_token` usado apenas em `GET /user`, depois
-  `DELETE /applications/{client_id}/grant` (exige 204) antes de criar a sessão.
-- `/oauth/logout` só aceita `POST` com `Origin` igual a `PUBLIC_BASE_URL`.
-- Toda resposta dinâmica usa `Cache-Control: no-store`.
+Qualquer provedor diferente de `google` ou `github` responde 404.
 
-## O que você precisa fazer no navegador
+## Como funciona
 
-### 0. Repositório
+O navegador nunca recebe `access_token`, `refresh_token` nem Client Secret —
+só um identificador aleatório de sessão.
 
-1. Crie um repositório no GitHub (`main` como padrão) e dê acesso à dupla.
-2. Envie este conteúdo. Sem `gh`, use o git normal:
-   ```sh
-   cd ~/Projects/college/oauth-pages-lab
-   git remote add origin git@github.com:gabriel-prime/oauth.git
-   git push -u origin main
-   ```
+1. **Início** — 32 bytes aleatórios viram id da transação, `state`, `nonce` e
+   `code_verifier`. O D1 guarda os resumos SHA-256; o cookie `__Host-oauth-tx`
+   dura 10 minutos.
+2. **Retorno** — a Function exige o cookie, confere o resumo do `state` e
+   **apaga a transação antes de continuar**. Só então troca o código, usando o
+   `code_verifier` e o Client Secret.
+3. **Identidade** — o `id_token` do Google é validado no servidor: JWT em três
+   partes, `RS256`, JWKS obtido pelo documento de descoberta e assinatura
+   verificada com `crypto.subtle`. No GitHub, o `access_token` serve para uma
+   única chamada a `GET /user` e a autorização é revogada em seguida, exigindo
+   204 antes de a sessão existir.
+4. **Sessão** — cookie `__Host-session` opaco, `HttpOnly`, `SameSite=Strict`,
+   8 horas. O D1 guarda o resumo do cookie, nunca seu valor.
 
-### 1. Cloudflare Pages
+O logout exige `POST` e `Origin` igual a `PUBLIC_BASE_URL`, remove a linha do
+banco e expira o cookie. Toda resposta dinâmica usa `Cache-Control: no-store`.
 
-Workers & Pages → Create application → Pages → Connect to Git → selecione o
-repositório → ramificação de produção `main`.
+## Configuração no painel do Pages
 
-| Campo                  | Valor  |
-|------------------------|--------|
-| Framework preset       | None   |
-| Build command          | vazio  |
-| Build output directory | public |
-| Root directory         | vazio  |
+Build output directory `public`, sem build command. Binding D1 chamado `DB`.
 
-Save and Deploy. Copie a URL `https://oauth-gabriel-fortunato.pages.dev` (sem barra
-final): é a `URL_BASE`. Confira `URL_BASE/api/health` → `{"status":"ok"}`.
+| Variável | Tipo |
+|---|---|
+| `PUBLIC_BASE_URL` | texto, sem barra final |
+| `GOOGLE_CLIENT_ID` · `GITHUB_CLIENT_ID` | texto |
+| `GOOGLE_CLIENT_SECRET` · `GITHUB_CLIENT_SECRET` | **secret** |
 
-### 2. Banco D1
+URLs de retorno cadastradas nos provedores: `{URL}/oauth/callback/google` e
+`{URL}/oauth/callback/github`, exatas e sem barra final.
 
-Storage & Databases → D1 SQL Database → Create database →
-`oauth-sessions-gabriel` → Console → cole e execute `docs/schema.sql`.
+Esquema do banco em `docs/schema.sql`.
 
-Depois: Workers & Pages → projeto → Settings → Bindings → Add → D1 database →
-Variable name `DB` → banco `oauth-sessions-gabriel` (produção e prévia).
-Faça um novo deploy (Deployments → Retry/Redeploy).
+## Verificar
 
-### 3. Google
-
-Google Cloud Console (janela privativa) → projeto → tela de consentimento
-(app em teste, contas da dupla como usuárias de teste) → Credentials →
-Create OAuth client ID → **Web application** → Authorized redirect URI:
-
-```
-URL_BASE/oauth/callback/google
+```sh
+curl -i https://oauth-gabriel-fortunato.pages.dev/api/health
+curl -i https://oauth-gabriel-fortunato.pages.dev/oauth/login/google
 ```
 
-Escopos: apenas `openid email profile`. Guarde Client ID e Client Secret
-para a etapa 5.
+O primeiro responde 200. O segundo responde 302 com `__Host-oauth-tx` e um
+`Location` contendo `code_challenge_method=S256`, sem Client Secret nem
+`code_verifier`.
 
-### 4. GitHub OAuth App
+## Evidências
 
-GitHub → Settings → Developer settings → OAuth apps → New OAuth App:
+`public/entrega1/` — configuração, URLs de retorno, esquema do D1, cabeçalhos
+saneados dos dois logins, os seis testes de falha e a lista de aceitação.
 
-- Application name: nome da equipe
-- Homepage URL: `URL_BASE`
-- Authorization callback URL: `URL_BASE/oauth/callback/github`
-- Device Flow: desativado
+Os arquivos de `public/` são públicos por definição: o Pages os entrega antes de
+qualquer código rodar. A sessão protege apenas as rotas dinâmicas. Por isso as
+evidências estão saneadas, com todo valor sensível substituído por `[REMOVIDO]`.
 
-Register → Generate a new client secret.
+## Nota
 
-### 5. Variáveis e segredos no Pages
-
-Settings → Variables and Secrets → Add:
-
-| Nome                   | Tipo          | Valor                      |
-|------------------------|---------------|----------------------------|
-| `PUBLIC_BASE_URL`      | texto         | `URL_BASE` sem barra final |
-| `GOOGLE_CLIENT_ID`     | texto         | Client ID do Google        |
-| `GITHUB_CLIENT_ID`     | texto         | Client ID do GitHub        |
-| `GOOGLE_CLIENT_SECRET` | **Encrypt**   | Client Secret do Google    |
-| `GITHUB_CLIENT_SECRET` | **Encrypt**   | Client Secret do GitHub    |
-
-Configure para produção e faça um novo deploy.
-
-### 6. Testes
-
-Abra `URL_BASE`, entre com Google, confira `/api/me`, saia, repita com
-GitHub. Depois execute os seis casos de falha da seção 16 do roteiro e
-preencha o campo **Resultado observado** em
-`public/entrega1/07-testes-falha.md`.
-
-## Evidências (`public/entrega1/`)
-
-A pasta precisa conter exatamente estes 8 arquivos:
-
-| Arquivo                     | Origem                                              |
-|-----------------------------|-----------------------------------------------------|
-| `01-pages-configuracao.pdf` | gerado de `docs/01-pages-configuracao.txt`          |
-| `02-google-retorno.txt`     | URL de retorno do Google                            |
-| `03-github-retorno.txt`     | Homepage + URL de retorno do GitHub                 |
-| `04-d1-esquema.txt`         | resultado da consulta em `sqlite_schema`            |
-| `05-inicio-login-google.pdf`| gerado de `docs/05-inicio-login-google.txt`         |
-| `06-inicio-login-github.pdf`| gerado de `docs/06-inicio-login-github.txt`         |
-| `07-testes-falha.md`        | casos de falha com resultado observado              |
-| `08-aceitacao.md`           | lista de aceitação assinada                         |
-
-Fluxo sugerido:
-
-1. Quando souber o nome do projeto no Pages, rode
-   `sh docs/definir-url.sh oauth-gabriel-fortunato` — troca o placeholder em todos os
-   arquivos e regenera os PDFs (usa só o `cupsfilter` do macOS).
-2. Ajuste `docs/01-pages-configuracao.txt` (nome do repositório) e os
-   cabeçalhos em `docs/05-*.txt` / `docs/06-*.txt` com o que aparecer no
-   painel Network, mantendo `[REMOVIDO]` em cookie, `state`, `code_challenge`,
-   `nonce` e Client ID. Rode `sh docs/gerar-pdfs.sh` de novo.
-3. Confirme o conteúdo de `04-d1-esquema.txt` com o que o console D1 mostrou.
-4. Preencha `07-testes-falha.md` e marque/assine `08-aceitacao.md`.
-5. Faça commit e push. A avaliação automática lê `public/entrega1/`.
-
-Nunca coloque Client Secret, cookies, tokens, `state`, `nonce` ou
-`code_challenge` reais nas evidências nem no repositório.
-
-## Diagnóstico rápido
-
-| Sintoma                    | Conferir                                              |
-|----------------------------|-------------------------------------------------------|
-| `redirect_uri_mismatch`    | URL de retorno exata no provedor, sem barra final     |
-| `invalid_client`           | Client ID/Secret no Pages, novo deploy                |
-| `{"error":"misconfigured"}`| variável faltando (`PUBLIC_BASE_URL`, IDs, `DB`)      |
-| `/api/health` 404          | pasta `functions` na raiz; deploy mais recente        |
-| `DB` indefinido            | binding chamado exatamente `DB`; novo deploy          |
-| `github_user_failed` 401   | GitHub rejeitou `X-GitHub-Api-Version` — ajuste a     |
-|                            | constante em `functions/oauth/callback/[provider].js` |
+`X-GitHub-Api-Version` está no topo de `functions/oauth/callback/[provider].js`.
+Se a consulta ao perfil passar a falhar, é a primeira linha a conferir.
