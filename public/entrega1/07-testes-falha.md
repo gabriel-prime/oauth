@@ -1,6 +1,6 @@
 # 07 – Testes de falha
 
-Projeto: `https://NOME-DO-PROJETO.pages.dev`
+Projeto: `https://oauth-gabriel-fortunato.pages.dev`
 Todos os testes foram executados na implantação de produção. Valores transitórios
 (cookies, `state`, `code`, `nonce`, `code_challenge`, tokens) foram substituídos por
 `[REMOVIDO]` ou omitidos.
@@ -49,14 +49,14 @@ Todos os testes foram executados na implantação de produção. Valores transit
 
 ## Caso 5: origem inválida na saída
 
-- **Preparação:** sessão válida aberta em `https://NOME-DO-PROJETO.pages.dev`. Em outra aba, na origem
+- **Preparação:** sessão válida aberta em `https://oauth-gabriel-fortunato.pages.dev`. Em outra aba, na origem
   `https://example.com`, foi executado no console:
   ```js
-  fetch("https://NOME-DO-PROJETO.pages.dev/oauth/logout", { method: "POST", credentials: "include" });
+  fetch("https://oauth-gabriel-fortunato.pages.dev/oauth/logout", { method: "POST", credentials: "include" });
   ```
 - **Pedido enviado:** `POST /oauth/logout` com `Origin: https://example.com`.
 - **Resultado esperado:** a rota recusa (HTTP 403, `{"error":"invalid_origin"}`) e, ao
-  voltar para a aba de `https://NOME-DO-PROJETO.pages.dev`, a sessão original continua válida
+  voltar para a aba de `https://oauth-gabriel-fortunato.pages.dev`, a sessão original continua válida
   (`/api/me` responde 200).
 - **Resultado observado:** [PREENCHER após executar]
 

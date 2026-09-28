@@ -1,8 +1,14 @@
+Consulta executada no console D1 (banco oauth-sessions-gabriel):
+
 SELECT name, type FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name;
 
 name                        type
 --------------------------  -----
 oauth_transactions_expiry   index
 sessions_expiry             index
+_cf_KV                      table
 oauth_transactions          table
 sessions                    table
+
+Observação: _cf_KV é uma tabela interna criada pelo próprio D1, não faz parte
+do esquema do laboratório. As tabelas e os índices exigidos estão presentes.

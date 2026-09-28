@@ -3,15 +3,15 @@
 
 Pedido
 ------
-GET https://NOME-DO-PROJETO.pages.dev/oauth/login/github HTTP/2
-Host: NOME-DO-PROJETO.pages.dev
+GET https://oauth-gabriel-fortunato.pages.dev/oauth/login/github HTTP/2
+Host: oauth-gabriel-fortunato.pages.dev
 
 Resposta
 --------
 HTTP/2 302
 Location: https://github.com/login/oauth/authorize
           ?client_id=[REMOVIDO]
-          &redirect_uri=https://NOME-DO-PROJETO.pages.dev%2Foauth%2Fcallback%2Fgithub
+          &redirect_uri=https://oauth-gabriel-fortunato.pages.dev%2Foauth%2Fcallback%2Fgithub
           &response_type=code
           &state=[REMOVIDO]
           &code_challenge=[REMOVIDO]

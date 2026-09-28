@@ -1,6 +1,6 @@
 # 08 – Critérios de aceitação
 
-Projeto: `https://NOME-DO-PROJETO.pages.dev`
+Projeto: `https://oauth-gabriel-fortunato.pages.dev`
 
 - [ ] o site é servido pelo endereço `pages.dev` atribuído à equipe;
 - [ ] os arquivos estáticos e as Functions compartilham a mesma origem;

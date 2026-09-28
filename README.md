@@ -48,7 +48,7 @@ arquivos dele para lá; o `index.html` continua sendo a página de login.
 2. Envie este conteúdo. Sem `gh`, use o git normal:
    ```sh
    cd ~/Projects/college/oauth-pages-lab
-   git remote add origin git@github.com:SEU-USUARIO/NOME-DO-PROJETO.git
+   git remote add origin git@github.com:gabriel-prime/oauth.git
    git push -u origin main
    ```
 
@@ -64,16 +64,16 @@ repositório → ramificação de produção `main`.
 | Build output directory | public |
 | Root directory         | vazio  |
 
-Save and Deploy. Copie a URL `https://NOME-DO-PROJETO.pages.dev` (sem barra
+Save and Deploy. Copie a URL `https://oauth-gabriel-fortunato.pages.dev` (sem barra
 final): é a `URL_BASE`. Confira `URL_BASE/api/health` → `{"status":"ok"}`.
 
 ### 2. Banco D1
 
 Storage & Databases → D1 SQL Database → Create database →
-`oauth-sessions-EQUIPE` → Console → cole e execute `docs/schema.sql`.
+`oauth-sessions-gabriel` → Console → cole e execute `docs/schema.sql`.
 
 Depois: Workers & Pages → projeto → Settings → Bindings → Add → D1 database →
-Variable name `DB` → banco `oauth-sessions-EQUIPE` (produção e prévia).
+Variable name `DB` → banco `oauth-sessions-gabriel` (produção e prévia).
 Faça um novo deploy (Deployments → Retry/Redeploy).
 
 ### 3. Google
@@ -139,7 +139,7 @@ A pasta precisa conter exatamente estes 8 arquivos:
 Fluxo sugerido:
 
 1. Quando souber o nome do projeto no Pages, rode
-   `sh docs/definir-url.sh NOME-DO-PROJETO` — troca o placeholder em todos os
+   `sh docs/definir-url.sh oauth-gabriel-fortunato` — troca o placeholder em todos os
    arquivos e regenera os PDFs (usa só o `cupsfilter` do macOS).
 2. Ajuste `docs/01-pages-configuracao.txt` (nome do repositório) e os
    cabeçalhos em `docs/05-*.txt` / `docs/06-*.txt` com o que aparecer no

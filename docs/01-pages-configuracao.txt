@@ -1,10 +1,10 @@
 01 - Configuração do projeto no Cloudflare Pages
 =================================================
 
-Nome do projeto ............: NOME-DO-PROJETO
-URL de produção ............: https://NOME-DO-PROJETO.pages.dev
+Nome do projeto ............: oauth-gabriel-fortunato
+URL de produção ............: https://oauth-gabriel-fortunato.pages.dev
 Integração .................: GitHub (Connect to Git)
-Repositório ................: github.com/USUARIO/NOME-DO-PROJETO
+Repositório ................: github.com/gabriel-prime/oauth
 Ramificação de produção ....: main
 
 Opções de construção
@@ -16,12 +16,12 @@ Root directory .............: (vazio)
 
 Ligações (Bindings)
 -------------------
-D1 database ................: variável DB -> oauth-sessions-EQUIPE
+D1 database ................: variável DB -> oauth-sessions-gabriel
                               (produção e prévia)
 
 Variáveis e segredos
 --------------------
-PUBLIC_BASE_URL ............: https://NOME-DO-PROJETO.pages.dev  (texto simples)
+PUBLIC_BASE_URL ............: https://oauth-gabriel-fortunato.pages.dev  (texto simples)
 GOOGLE_CLIENT_ID ...........: [REMOVIDO]           (texto simples)
 GITHUB_CLIENT_ID ...........: [REMOVIDO]           (texto simples)
 GOOGLE_CLIENT_SECRET .......: [REMOVIDO]           (criptografado)

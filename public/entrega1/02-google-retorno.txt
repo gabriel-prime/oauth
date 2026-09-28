@@ -1,1 +1,1 @@
-https://NOME-DO-PROJETO.pages.dev/oauth/callback/google
+https://oauth-gabriel-fortunato.pages.dev/oauth/callback/google

@@ -1,4 +1,4 @@
--- Cole e execute no console do banco D1 (oauth-sessions-EQUIPE).
+-- Cole e execute no console do banco D1 (oauth-sessions-gabriel).
 CREATE TABLE oauth_transactions (
   id_hash TEXT PRIMARY KEY,
   provider TEXT NOT NULL CHECK (provider IN ('google', 'github')),
