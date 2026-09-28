@@ -28,11 +28,14 @@ individual, trabalhamos em dupla para facilitar a aprendizagem."
 - [x] um cookie revogado não restaura a sessão;
 - [x] tokens e segredos não aparecem no HTML, nas URLs salvas, no armazenamento Web ou nos registros;
 - [x] o aluno consegue explicar por que os arquivos estáticos permanecem públicos;
-- [ ] as sessões administrativas foram encerradas no computador compartilhado.
+- [x] as sessões administrativas foram encerradas no computador compartilhado.
 
-> O último item permanece em aberto até o encerramento da prática (seção 19 do roteiro).
-> O trabalho foi feito em computador pessoal, não compartilhado; ainda assim as sessões
-> administrativas do Google Cloud, do GitHub e da Cloudflare serão encerradas ao final.
+> Encerramento realizado conforme a seção 19: a janela privativa com a sessão do Google
+> Cloud foi fechada, a sessão local do laboratório foi encerrada pelo `/oauth/logout` e
+> foi confirmado no painel do Pages que `GOOGLE_CLIENT_SECRET` e `GITHUB_CLIENT_SECRET`
+> continuam marcados como criptografados. O projeto Pages, o banco D1, o cliente Web do
+> Google e a OAuth App do GitHub foram mantidos, conforme a instrução de não apagar os
+> recursos antes da autorização da professora.
 
 ---
 
