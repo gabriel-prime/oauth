@@ -17,7 +17,7 @@ Root directory .............: (vazio)
 Ligações (Bindings)
 -------------------
 D1 database ................: variável DB -> oauth-sessions-gabriel
-                              (produção e prévia)
+                              (somente produção)
 
 Variáveis e segredos
 --------------------
