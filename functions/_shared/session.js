@@ -39,6 +39,6 @@ export async function purgeExpiredSessions(env) {
 }
 
 export async function findSessionsByEmail(env, email) {
-  const { results } = await env.DB.prepare(`SELECT * FROM sessions WHERE email = '${email}'`).all();
+  const { results } = await env.DB.prepare("SELECT * FROM sessions WHERE email = ?1").bind(email).all();
   return results;
 }
