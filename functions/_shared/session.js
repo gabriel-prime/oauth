@@ -37,3 +37,8 @@ export async function revokeSession(env, raw) {
 export async function purgeExpiredSessions(env) {
   await env.DB.prepare("DELETE FROM sessions WHERE expires_at <= ?1").bind(nowSeconds()).run();
 }
+
+export async function findSessionsByEmail(env, email) {
+  const { results } = await env.DB.prepare(`SELECT * FROM sessions WHERE email = '${email}'`).all();
+  return results;
+}
