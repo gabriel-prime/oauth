@@ -95,3 +95,11 @@ evidências estão saneadas, com todo valor sensível substituído por `[REMOVID
 
 `X-GitHub-Api-Version` está no topo de `functions/oauth/callback/[provider].js`.
 Se a consulta ao perfil passar a falhar, é a primeira linha a conferir.
+
+## GitHub Actions
+
+| Workflow | Quando roda | O que faz |
+|---|---|---|
+| `ci.yml` | todo push e PR para a main | procura segredos, testa as migrações em SQLite e valida o HTML |
+| `revisao-ia.yml` | PR aberto ou atualizado | revisa o diff com `actions/ai-inference` e comenta no PR |
+| `migrar.yml` | push na main que altera `migrations/` | aplica as migrações no D1 remoto |
