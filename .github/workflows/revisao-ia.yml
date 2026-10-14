@@ -32,6 +32,9 @@ jobs:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         with:
           prompt-file: prompt.txt
+          # Vazio: a ação omite --model e o Copilot CLI usa o modelo padrão do
+          # plano. O padrão da ação, gpt-4.1, não está mais disponível.
+          model: ""
           system-prompt: Você é um revisor de código objetivo.
       - name: Comenta no PR
         env:
