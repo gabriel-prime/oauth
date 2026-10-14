@@ -1,0 +1,11 @@
+# Usado só pelo Wrangler no GitHub Actions (wrangler d1 migrations apply).
+# Sem pages_build_output_dir de propósito: assim o Pages ignora este arquivo e
+# continua usando a configuração do painel (variáveis, segredos e binding DB).
+name = "oauth-gabriel-fortunato"
+compatibility_date = "2025-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "oauth-sessions-gabriel"
+database_id = "4e10d5a4-8aee-4013-9194-f5a6bd23bb00"
+migrations_dir = "migrations"
