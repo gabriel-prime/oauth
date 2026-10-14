@@ -151,8 +151,13 @@ remota só a registra em `d1_migrations` sem recriar as tabelas.
 2. Um workflow `pull_request` de um fork executa código que o autor do fork
    escreveu. Se recebesse os segredos, qualquer pessoa poderia abrir um PR que
    alterasse o workflow ou um script para imprimir `secrets.COPILOT_PAT` ou
-   enviá-lo para fora. A regra impede o roubo de segredos por PR malicioso, e o
-   `GITHUB_TOKEN` desse PR também fica somente leitura.
+   enviá-lo para fora. A regra impede o roubo de segredos por PR malicioso. Por
+   padrão, o `GITHUB_TOKEN` desse PR também fica somente leitura. Em
+   repositórios privados ou organizações, um administrador pode mudar isso nas
+   opções "Send write tokens/secrets to workflows from fork pull requests", e é
+   justamente por esse risco que elas vêm desligadas. (A revisão da IA no PR de
+   entrega apontou que a frase original era categórica demais, e a observação
+   procede.)
 
 3. As permissões padrão do `GITHUB_TOKEN` podem ser amplas (escrita em quase
    tudo, dependendo da configuração do repositório ou da organização). Declarar
