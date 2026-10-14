@@ -1,1 +1,0 @@
-CREATE TABLE quebrada (id INTEGER PRIMARY KEY,, nome TEXT);
